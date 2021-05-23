@@ -20,6 +20,8 @@ HOST  < website host
 
 ## API
 
+All requests are POST.  
+
 ### Create a new letter  
 
 ```
@@ -35,6 +37,13 @@ Example body data:
     }
 }
 ````
+
+### Get all letters
+
+```
+host/letter/getAll
+````
+
 
 ### Sign a letter
 
