@@ -7,6 +7,6 @@ export const databaseReadyMiddleware = function (req, res, next) {
     if (DatabaseManager.instance.isReady) {
         next()
     } else {
-        res.send({ success: false, message: "Database is not connected." })
+        res.send({ success: false, message: "Database is not connected. Please make sure your mongodb is up and running." })
     }
 }
