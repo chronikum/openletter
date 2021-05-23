@@ -25,6 +25,10 @@ export default class Server {
         this.app.use(express.json());
         this.initializeRoutes();
         this.app.listen(this.port);
+        this.app.use((err, req, res, next) => {
+            res.status(500);
+            res.send({ success: false, message: 'Sorry, we ran into an critically error.' });
+        });
         console.log(`App listening on ${this.port}`)
     }
 
