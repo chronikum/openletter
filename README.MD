@@ -64,6 +64,21 @@ Example body data:
 }
 ````
 
+### Get signee information for a letter (signees)
+
+````
+host/sign/getInfo
+````
+
+Example body data:
+````
+{
+    "signer": {
+        "identifier": 3
+    }
+}
+````
+
 More endpoints can be seen in the ``/routes`` folder
 
 
