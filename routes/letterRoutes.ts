@@ -1,6 +1,7 @@
 import express from "express";
 import Letter from "../interfaces/Letter";
 import LetterManager from "../managers/LetterManager";
+import { checkAuthentication } from "../middleware/AuthenticationMiddleware";
 
 /**
  * Basic Routes
@@ -18,7 +19,7 @@ letterRoutes.post('/getAll', async (request, response) => {
 /**
  * Create a new letter
  */
-letterRoutes.post('/create', async (req, response) => {
+letterRoutes.post('/create', checkAuthentication, async (req, response) => {
     const letter = req.body?.letter as Letter;
     if (letter) {
         const createdLetter = await LetterManager.instance.createNewLetter(letter);
