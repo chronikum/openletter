@@ -52,7 +52,7 @@ export default class DatabaseManager {
         );
 
         mongoose.connection.on('connected', () => {
-            console.log("Databas connected!")
+            console.log("Database connected!")
             this.isReady = true
             subscriber.next(true);
         });
