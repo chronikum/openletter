@@ -1,7 +1,9 @@
 import crypto from 'crypto'
 import Mail from 'nodemailer/lib/mailer';
+import Letter from '../interfaces/Letter';
 import Signer from '../interfaces/Signer';
 import { MailManager } from './MailManager';
+import SignerManager from './SignerManager';
 
 export class VerificationManager {
     static instance = VerificationManager.getInstance();
@@ -22,26 +24,31 @@ export class VerificationManager {
      * Creates a new verification challenge and sends out the mail
      * @param signer 
      */
-    async createNewVerificationChallenge(signer: Signer) {
+    async createNewVerificationChallenge(signer: Signer, letter: Letter) {
         const generatedToken = crypto.randomBytes(12).toString('hex');
         const verificationChallenge = {
             signer: signer,
             token: generatedToken,
         };
 
-        MailManager.instance.sendTestMail(signer);
+        MailManager.instance.sendVerificationEmail(signer, generatedToken, letter);
 
         this.processVerificationChallengeRequest(signer, verificationChallenge);
     }
 
     /**
-     * Checks token for email reset validation
+     * Checks token for validation
      * @param token
      * @param email
+     * 
+     * -> Will also update the user as valid signee
      */
-    checkToken(token: string, signer): boolean {
-        const available = this.userTokens.find((pair) => ((pair.signer === signer) && (pair.token === token)));
-
+    checkToken(token: string): boolean {
+        const available = this.userTokens.find((pair) => (pair.token === token));
+        if (available) {
+            const signer = available.signer;
+            SignerManager.instance.validateSigner(signer);
+        }
         return !!available;
     }
 

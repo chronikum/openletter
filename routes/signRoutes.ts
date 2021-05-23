@@ -2,6 +2,7 @@ import express from "express";
 import Letter from "../interfaces/Letter";
 import Signer from "../interfaces/Signer";
 import LetterManager from "../managers/LetterManager";
+import SignerManager from "../managers/SignerManager";
 import { VerificationManager } from "../managers/VerificationManager";
 
 const signRoutes = express.Router();
@@ -11,13 +12,15 @@ const signRoutes = express.Router();
  */
 signRoutes.post('/sign', async (request, response) => {
     const signer = request.body?.signer as Signer;
-    console.log(request.body)
     if (signer?.signing && signer?.email) {
         const letter = await LetterManager.instance.getLetterById(signer.signing);
-        console.log(letter)
         if (letter && signer) {
-            VerificationManager.instance.createNewVerificationChallenge(signer);
-            response.send({ success: true })
+            const validSigner = await SignerManager.instance.createNewSigner(signer);
+            if (validSigner) {
+                response.send({ success: true })
+            } else {
+                response.send({ success: false })
+            }
         } else {
             response.send({ success: false })
         }

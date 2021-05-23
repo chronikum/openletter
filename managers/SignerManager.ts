@@ -1,5 +1,6 @@
 import Signer from "../interfaces/Signer";
 import { SignerModel } from "../models/SignerModel";
+import LetterManager from "./LetterManager";
 import { VerificationManager } from "./VerificationManager";
 
 export default class SignerManager {
@@ -21,18 +22,33 @@ export default class SignerManager {
      * @param Signer
      */
     async createNewSigner(signer: Signer): Promise<Signer> {
-        if (signer.email && signer.identifier) {
+        if (signer.email && signer.signing) {
             const signerExists = await this.signerExists(signer);
-            if (!signerExists) {
+            const letter = await LetterManager.instance.getLetterById(signer.signing);
+            if (!signerExists && letter) {
+                const signerCount = await SignerModel.count() || 0;
                 signer.verified = false; // Always false at the beginning
+                signer.identifier = (signerCount + 1)
+                // Create and save new signer
                 const signerModel = new SignerModel(signer);
-                VerificationManager.instance.createNewVerificationChallenge(signer);
                 await signerModel.save();
+                VerificationManager.instance.createNewVerificationChallenge(signer, letter);
                 return await SignerModel.findOne({ email: signer.email, signing: signer.signing }) as unknown as Signer
             } else {
                 return null
             }
+        } else {
+            return null
         }
+    }
+
+    /**
+     * Validates Signer after e-mail validation
+     */
+    async validateSigner(signer: Signer) {
+        const verified = await SignerModel.updateOne({ email: signer.email, signing: signer.signing }, {
+            verified: true
+        })
     }
 
     /**
