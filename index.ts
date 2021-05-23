@@ -1,7 +1,7 @@
 import express from "express"
 import DatabaseManager from "./managers/DatabaseManager"
 import { databaseReadyMiddleware } from "./middleware/DatabaseReadyMiddleWare"
-import basicRoutes from './routes/basicRoutes'
+import letterRoutes from './routes/letterRoutes'
 
 export default class Server {
 
@@ -29,7 +29,7 @@ export default class Server {
      * Load and set routes
      */
     initializeRoutes() {
-        this.app.use('/', databaseReadyMiddleware, basicRoutes);
+        this.app.use('/letter', databaseReadyMiddleware, letterRoutes);
     }
 
     /**
