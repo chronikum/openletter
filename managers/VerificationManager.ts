@@ -78,14 +78,14 @@ export class VerificationManager {
     /**
      * This function, called once, will periodically check for expired tokens and remove them.
      * - the function runs every 5 minutes
-     * - tokens are valid for 20 minutes
+     * - tokens are valid for 60 minutes
      */
     clearExpiredTokens() {
         setInterval(() => {
             // Find all tokens to delete and flag them
             this.userTokens.forEach((token) => {
                 const timeLeft = token.created - Date.now();
-                if (timeLeft < -3600000) { // 20 minutes passed
+                if (timeLeft < -3600000) { // 60 minutes passed
                     token.created = 0;
                 }
             });
