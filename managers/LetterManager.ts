@@ -42,10 +42,11 @@ export default class LetterManager {
      * @returns 
      */
     async getLetterById(identifier: number): Promise<Letter> {
-        return await LetterModel.findOne({ identifier: identifier }) as unknown as Letter;
+        if ((identifier > 0)) {
+            return await LetterModel.findOne({ identifier: identifier }) as unknown as Letter;
+        } else {
+            return null;
+        }
     }
-
-
-
 
 }

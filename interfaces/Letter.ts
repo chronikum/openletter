@@ -4,5 +4,6 @@
 export default interface Letter {
     identifier?: number,
     title: string,
-    description: string
+    description: string,
+    signers: string[],
 }

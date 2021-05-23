@@ -1,4 +1,4 @@
-import { Connection, Mongoose } from "mongoose";
+import mongoose, { Connection, Mongoose } from "mongoose";
 import { Observable } from "rxjs";
 
 /**
@@ -19,8 +19,6 @@ export default class DatabaseManager {
     // Path to database
     private path: string;
 
-    // Mongoose Stuff
-    mongoose = new Mongoose();
     connection: any;
 
     // Ready indicator
@@ -40,7 +38,6 @@ export default class DatabaseManager {
         const readPath = process.env.DATABASE_PATH;
         if (readPath) {
             this.path = readPath;
-
         }
     }
 
@@ -49,24 +46,24 @@ export default class DatabaseManager {
      */
     databaseReady = new Observable((subscriber) => {
         // Try to connect and catch when fail
-        this.mongoose.connect(DatabaseManager.instance.path, { useNewUrlParser: true, useUnifiedTopology: true }).catch(
+        mongoose.connect(DatabaseManager.instance.path, { useNewUrlParser: true, useUnifiedTopology: true }).catch(
             // eslint-disable-next-line no-return-assign
             (error) => this.isReady = false,
         );
 
-        this.mongoose.connection.on('connected', () => {
+        mongoose.connection.on('connected', () => {
             console.log("Databas connected!")
             this.isReady = true
             subscriber.next(true);
         });
 
-        this.mongoose.connection.on('error', () => {
+        mongoose.connection.on('error', () => {
             console.log("Connection failed")
             this.isReady = false
             subscriber.next(false);
         });
 
-        this.mongoose.connection.on('disconnected', () => {
+        mongoose.connection.on('disconnected', () => {
             console.log("Connection failed")
             this.isReady = false
             subscriber.next(false);

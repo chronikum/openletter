@@ -1,7 +1,10 @@
+import bodyParser from "body-parser"
 import express from "express"
 import DatabaseManager from "./managers/DatabaseManager"
 import { databaseReadyMiddleware } from "./middleware/DatabaseReadyMiddleWare"
+import basicRoutes from "./routes/basicRoutes"
 import letterRoutes from './routes/letterRoutes'
+import signRoutes from "./routes/signRoutes"
 
 export default class Server {
 
@@ -18,10 +21,11 @@ export default class Server {
      * Constructs a new instance of open letter backend
      */
     constructor() {
+        this.connectDatabase();
+        this.app.use(express.json());
         this.initializeRoutes();
         this.app.listen(this.port);
         console.log(`App listening on ${this.port}`)
-        this.connectDatabase();
     }
 
 
@@ -29,7 +33,9 @@ export default class Server {
      * Load and set routes
      */
     initializeRoutes() {
+        this.app.use('/', databaseReadyMiddleware, basicRoutes);
         this.app.use('/letter', databaseReadyMiddleware, letterRoutes);
+        this.app.use('/signer', databaseReadyMiddleware, signRoutes);
     }
 
     /**
