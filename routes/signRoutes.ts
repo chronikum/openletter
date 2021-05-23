@@ -29,4 +29,21 @@ signRoutes.post('/sign', async (request, response) => {
     }
 });
 
+/**
+ * Get all signees for the provided letter
+ */
+signRoutes.post('/getInfo', async (request, response) => {
+    const providedLetter = request.body?.letter as Letter;
+    if (providedLetter?.identifier) {
+        const signeeInformation = await SignerManager.instance.getAllSignersForLetterId(providedLetter.identifier);
+        if (signeeInformation) {
+            response.send({ success: true, signeeInformation })
+        } else {
+            response.send({ success: false })
+        }
+    } else {
+        response.send({ success: false })
+    }
+});
+
 export default signRoutes;

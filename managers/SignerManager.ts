@@ -1,4 +1,6 @@
+import SigneeInformation from "../interfaces/SigneeInformation";
 import Signer from "../interfaces/Signer";
+import { LetterModel } from "../models/LetterModel";
 import { SignerModel } from "../models/SignerModel";
 import LetterManager from "./LetterManager";
 import { VerificationManager } from "./VerificationManager";
@@ -68,4 +70,32 @@ export default class SignerManager {
             return false
         }
     }
+
+    /**
+     * Get information of signees for provided letter
+     * 
+     * @param letterId 
+     * @returns SigneeInformation
+     */
+    async getAllSignersForLetterId(letterId: number): Promise<SigneeInformation> {
+        if (letterId) {
+            const signees = await SignerModel.find({ signing: letterId }) as unknown as Signer[] || [];
+            const signeeCount = await SignerModel.find({ signing: letterId }).count();
+            let names = [];
+            signees.forEach(signer => {
+                if (signer?.name) {
+                    names.push(signer.name)
+                }
+            })
+            const signeeInformation: SigneeInformation = {
+                signeeCount: signeeCount,
+                names: names,
+                letterIdentifier: letterId
+            }
+            return signeeInformation
+        } else {
+            return null;
+        }
+    }
+
 }
