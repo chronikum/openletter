@@ -34,7 +34,8 @@ letterRoutes.post('/create', checkAuthentication, async (req, response) => {
  */
 letterRoutes.post('/getById', async (request, response) => {
     const identifier = request.body?.identifier;
-    if ((identifier instanceof Number) && (identifier > 0)) {
+    if ((identifier > 0)) {
+        console.log("ok")
         const letter = await LetterManager.instance.getLetterById(identifier as number);
         if (letter) {
             response.send({ success: true, letter })
