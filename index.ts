@@ -26,8 +26,14 @@ export default class Server {
      * Constructs a new instance of open letter backend
      */
     constructor() {
+        require('dotenv').config()
         this.connectDatabase();
         this.app.use(express.json());
+        this.app.use(function (req, res, next) {
+            res.header("Access-Control-Allow-Origin", process.env.HOST);
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+        });
         this.initializeRoutes();
         this.app.listen(this.port);
         this.app.use((err, req, res, next) => {

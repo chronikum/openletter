@@ -15,7 +15,7 @@ SMTP  < smtp host
 USERNAME  < username email
 PASSWORD  < username password
 PORT  < email port
-HOST  < website host
+HOST  < website host with http(s) and port specification (if necessary). This will be also used as cors origin.
 ```
 
 ## API
